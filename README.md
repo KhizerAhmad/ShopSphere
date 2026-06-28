@@ -1,136 +1,147 @@
-# Ecommerce Fullstack (React + Supabase)
+# ShopSphere 🛍️ — Fullstack E-Commerce (React + Supabase)
 
-A full eCommerce storefront — home page, product listing (grid/list + filters),
-product details, cart, auth, order history, and an admin panel — built with
-React (Vite) and Supabase (Postgres + Auth + Storage).
+A complete eCommerce storefront — home page, product listing with filters, product details, cart, auth, order history, and a full admin panel. Built with React (Vite) on the frontend and Supabase as the entire backend.
 
-There is no separate Node/Express backend: Supabase **is** the backend.
-The React app talks to it directly through `@supabase/supabase-js`, and
-Postgres Row Level Security (RLS) policies enforce what each user/admin
-is allowed to do.
+There's no separate Node/Express server here. Supabase **is** the backend — the React app talks to it directly via `@supabase/supabase-js`, and Postgres Row Level Security (RLS) policies control exactly what each user or admin is allowed to do at the database level.
 
 ---
 
-## 1. One-time setup — connect your Supabase project
+## What it does
 
-This is the only step required to make the app work end-to-end.
+**Storefront**
+- Home page with hero banner, category rail, featured deals, recommended products, and shipping info
+- Product listing with category filters, brand/feature checkboxes, price range slider, sorting, grid/list toggle, and search
+- Product detail pages with images, tags, pricing (with discount support), quantity selector, and related products
+- Full cart — quantity controls, remove, save for later, coupon codes (`SAVE10` works as a demo), order summary with tax + shipping
+- Fully responsive across every page
 
-1. Open your Supabase project → **Project Settings (gear icon) → API**.
-2. Copy the **Project URL** and the **anon public** key.
-3. Open the `.env` file at the root of this project and paste them in:
+**Auth**
+- Email/password sign up and login via Supabase Auth
+- A profile is auto-created for every new user via a Postgres trigger
+- Session persists across page reloads
 
-   ```
-   VITE_SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
-   VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-   ```
+**Cart that actually persists**
+- Cart items are stored server-side per user (not just localStorage) — so it follows you across devices and browsers
 
-4. Save the file.
+**Checkout**
+- Places an order with snapshotted product details (name/price at time of purchase), then clears the cart
+- Full order history visible at `/orders`
 
-## 2. Run the database schema
+**Admin panel** (`/admin`)
+- Full product CRUD — create, edit, delete
+- Image upload to Supabase Storage with live preview
+- Toggle "featured" status to control what shows up on the homepage
 
-1. In your Supabase project, go to **SQL Editor → New query**.
-2. Open `supabase/schema.sql` from this project, copy the **entire file**,
-   paste it into the SQL editor, and click **Run**.
+**Security**
+- Row Level Security enabled on every table
+- Users can only see/edit their own cart and orders
+- Only admins can write products or upload images — enforced at the database level, not just hidden in the UI
 
-This creates all tables (`profiles`, `categories`, `products`, `cart_items`,
-`orders`, `order_items`), sets up Row Level Security policies, creates a
-public `product-images` storage bucket, and seeds 24 sample products across
-4 categories (with brand and feature tags) so the app isn't empty on first load.
+---
 
-**Already ran this before?** The script is safe to re-run — re-running it
-will add any new sample products and backfill `brand`/`features` on existing
-rows without duplicating anything or touching your own data.
+## Why I built this
 
-> **Note on seed images:** the 24 sample products use Unsplash photo URLs.
-> They should load correctly, but if any single product shows a plain "Image
-> unavailable" placeholder instead of a photo, that just means that one
-> Unsplash link went stale — it won't break the app (a fallback placeholder
-> renders instead of a broken-image icon), and you can fix it permanently by
-> opening that product in `/admin` → Edit → uploading any image of your own.
+Wanted to build something that actually feels production-grade rather than a typical CRUD tutorial app. Used Supabase as a full backend replacement (Postgres + Auth + Storage) instead of writing a custom API, and focused heavily on getting RLS policies right so security isn't just a frontend illusion.
 
-## 3. Install dependencies and run
+---
+
+## Tech Stack
+
+| Technology | Usage |
+|------------|-------|
+| React | Frontend UI |
+| JavaScript | Core logic |
+| Vite | Build tool and dev server |
+| Supabase | Backend — Postgres database, Auth, Storage |
+| PostgreSQL + RLS | Data storage and row-level security policies |
+| Context API | Global state — Auth, Cart, Toast |
+
+---
+
+## Setup
+
+### 1. Connect your Supabase project
+
+1. Open your Supabase project → **Project Settings → API**
+2. Copy the **Project URL** and **anon public** key
+3. Open `.env` at the project root and paste them in:
+
+```
+VITE_SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
+VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### 2. Run the database schema
+
+1. In Supabase, go to **SQL Editor → New query**
+2. Open `supabase/schema.sql`, copy the entire file, paste into the SQL editor, and run it
+
+This creates all tables (`profiles`, `categories`, `products`, `cart_items`, `orders`, `order_items`), sets up RLS policies, creates a public `product-images` storage bucket, and seeds 24 sample products across 4 categories so the app isn't empty on first load.
+
+> Safe to re-run — won't duplicate data or touch your own rows. Seed images use Unsplash links; if one goes stale you'll just see a placeholder, easily fixed by re-uploading an image via `/admin`.
+
+### 3. Install and run
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open the URL it prints (typically `http://localhost:5173`).
+Open [http://localhost:5173](http://localhost:5173)
 
-## 4. Make yourself an admin
+### 4. Make yourself an admin
 
-The admin panel (`/admin`) is locked to users with `is_admin = true` in the
-`profiles` table. To unlock it:
+1. Sign up for an account inside the running app (`/signup`)
+2. In Supabase SQL Editor, run:
 
-1. **Sign up** for an account from inside the running app (`/signup`).
-2. Go back to Supabase **SQL Editor** and run:
+```sql
+update public.profiles set is_admin = true
+where id = (select id from auth.users where email = 'your-email@example.com');
+```
 
-   ```sql
-   update public.profiles set is_admin = true
-   where id = (select id from auth.users where email = 'your-email@example.com');
-   ```
-
-3. Refresh the app — you'll now see an **Admin** link in the header, and
-   `/admin` will let you create, edit, and delete products (including
-   uploading product images, which are stored in Supabase Storage).
+3. Refresh — you'll see an **Admin** link in the header, and `/admin` unlocks full product management
 
 ---
 
-## What's implemented
+## Project Structure
 
-**Storefront**
-- Home page — hero banner, category rail, featured "Deals & offers", recommended grid, extra services section, shipping regions
-- Product listing — category filter, **brand checkboxes**, **feature checkboxes**, price range slider, sort (newest / price / rating), grid/list view toggle, active-filter chips with "Clear all filters", search (via header search bar)
-- Product detail — image, brand, feature tags, price (with compare-at/discount support), quantity stepper, add to cart, description/shipping tabs, related products
-- Cart — quantity controls, remove, save for later / move to cart, coupon code (`SAVE10` for a working demo discount), order summary with tax + shipping, checkout
-- Responsive down to mobile for every page above
-
-**Auth**
-- Email/password sign up and log in via Supabase Auth
-- A `profiles` row is auto-created for every new user (via a Postgres trigger)
-- Session persists across reloads
-
-**Cart persistence**
-- Cart is stored server-side per user in `cart_items`, not just localStorage — it follows the user across devices/browsers
-
-**Checkout**
-- Places an `orders` row + `order_items` rows, snapshotting product name/price at time of purchase, then clears the cart
-- Order history visible at `/orders`
-
-**Admin panel** (`/admin`, gated by `is_admin`)
-- Full product CRUD: create, edit, delete
-- Image upload to Supabase Storage with live preview
-- Toggle "featured" status (controls homepage "Deals & offers" section)
-
-**Security**
-- Every table has Row Level Security enabled
-- Users can only see/edit their own cart and orders
-- Only admins can write to `products`/`categories` or upload to the
-  `product-images` bucket — enforced at the database level, not just hidden
-  in the UI
+```
+ShopSphere/
+│
+├── src/
+│   ├── components/   # Header, Footer, ProductCard, route guards, toast
+│   ├── context/      # AuthContext, CartContext, ToastContext
+│   ├── lib/           # supabaseClient.js, products.js, orders.js
+│   └── pages/         # Home, ProductListing, ProductDetail, Cart, Login,
+│                       # Signup, Orders, Admin, NotFound
+├── supabase/
+│   └── schema.sql     # Full DB schema + RLS policies + seed data
+├── .env.example
+└── package.json
+```
 
 ---
-
-## Project structure
-
-```
-src/
-  components/   Header, Footer, ProductCard, route guards, toast
-  context/      AuthContext, CartContext, ToastContext (global state)
-  lib/          supabaseClient.js, products.js, orders.js (all DB calls)
-  pages/        Home, ProductListing, ProductDetail, Cart, Login, Signup,
-                Orders, Admin, NotFound
-supabase/
-  schema.sql    Full DB schema + RLS policies + seed data — run once in Supabase
-```
 
 ## Deploying
 
-This is a static Vite app, so it deploys cleanly to **Vercel**, **Netlify**,
-or **Render** (static site):
+This is a static Vite app, so it deploys cleanly to Vercel, Netlify, or Render:
 
-1. Push this repo to GitHub.
-2. Import it into Vercel/Netlify.
-3. Set the same two environment variables (`VITE_SUPABASE_URL`,
-   `VITE_SUPABASE_ANON_KEY`) in the hosting platform's dashboard.
-4. Build command: `npm run build` — Output directory: `dist`.
+1. Push to GitHub
+2. Import into Vercel/Netlify
+3. Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the hosting dashboard
+4. Build command: `npm run build` — Output directory: `dist`
+
+---
+
+## Screenshot
+
+<img width="1892" height="922" alt="image" src="https://github.com/user-attachments/assets/71a1eac4-eb39-4afd-9951-72e1bd30908b" />
+
+
+---
+
+## Author
+
+**Khizer Ahmad** — built this to go beyond a basic CRUD app and build a properly secured, production-style eCommerce platform using Supabase as a complete backend.
+
+Feel free to fork it and build on top of it.
