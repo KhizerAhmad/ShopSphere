@@ -1,5 +1,9 @@
 .listing {
-  padding: 24px 24px 60px;
+  padding-bottom: 60px;
+}
+
+.listing > .container {
+  padding-top: 24px;
 }
 
 .listing__breadcrumb {
@@ -314,6 +318,7 @@
   color: var(--color-text-muted);
   margin: 4px 0;
   display: -webkit-box;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -377,7 +382,10 @@
 
 @media (max-width: 480px) {
   .listing {
-    padding: 16px 16px 48px;
+    padding-bottom: 48px;
+  }
+  .listing > .container {
+    padding-top: 16px;
   }
   .list-row {
     flex-wrap: wrap;
@@ -387,5 +395,155 @@
     align-items: flex-start;
     flex-direction: row;
     justify-content: space-between;
+  }
+}
+
+/* ============================================================ */
+/* Mobile-only chrome (Image 6): back+title header, search bar,  */
+/* category pill scroller, sort/filter/view toolbar              */
+/* ============================================================ */
+.listing__mobile-header,
+.listing__mobile-search,
+.listing__mobile-pills,
+.listing__mobile-toolbar {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .listing__breadcrumb {
+    display: none;
+  }
+
+  .listing__mobile-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--color-border);
+    background: var(--color-bg);
+    position: sticky;
+    top: var(--header-height);
+    z-index: 30;
+  }
+
+  .listing__mobile-header h1 {
+    font-size: 16px;
+    margin: 0;
+    font-weight: 700;
+  }
+
+  .listing__mobile-back,
+  .listing__mobile-icon {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    display: flex;
+    padding: 4px;
+  }
+
+  .listing__mobile-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 16px 0;
+    padding: 10px 14px;
+    background: var(--color-bg-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-faint);
+  }
+
+  .listing__mobile-search input {
+    flex: 1;
+    border: none;
+    background: none;
+    font-size: 14px;
+    outline: none;
+    color: var(--color-text);
+  }
+
+  .listing__mobile-pills {
+    display: flex;
+    gap: 8px;
+    padding: 14px 16px 4px;
+    overflow-x: auto;
+  }
+
+  .listing__mobile-pills button {
+    flex-shrink: 0;
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-muted);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 7px 16px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+
+  .listing__mobile-pills button.is-active {
+    background: var(--color-primary-light);
+    border-color: #bfdbfe;
+    color: var(--color-primary);
+  }
+
+  .listing__mobile-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .listing__mobile-toolbar select {
+    border: none;
+    background: none;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    flex-shrink: 0;
+  }
+
+  .listing__mobile-filter-count {
+    flex: 1;
+    font-size: 13px;
+    color: var(--color-text-muted);
+    border-left: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
+    padding: 0 12px;
+  }
+
+  /* Sidebar becomes the "Filter" drawer content only when relevant; for now
+     hide it on mobile since filters are summarized in the toolbar above and
+     remain reachable by tapping a category pill or the count above. */
+  .listing__sidebar {
+    display: none;
+  }
+
+  .listing__toolbar {
+    display: none;
+  }
+
+  /* List card style closer to Image 6: image + name + price + rating, no CTA button */
+  .list-row {
+    align-items: flex-start;
+    padding: 14px;
+  }
+
+  .list-row__image {
+    width: 76px;
+    height: 76px;
+  }
+
+  .list-row__desc {
+    display: none;
+  }
+
+  .list-row__price-col button {
+    display: none;
+  }
+
+  .list-row__price-col {
+    align-items: flex-end;
+    flex-direction: column;
+    width: auto;
   }
 }

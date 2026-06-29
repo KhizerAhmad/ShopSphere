@@ -137,8 +137,20 @@ create policy "Users manage their own cart"
 create table if not exists public.orders (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
+
   total numeric(10,2) not null,
   status text not null default 'pending',
+
+  full_name text,
+  email text,
+  phone text,
+
+  address text,
+  city text,
+  state text,
+  postal_code text,
+  country text,
+
   created_at timestamptz not null default now()
 );
 

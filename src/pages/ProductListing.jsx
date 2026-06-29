@@ -8,6 +8,7 @@ import ProductCard from '../components/ProductCard'
 import './ProductListing.css'
 
 const VISIBLE_LIMIT = 4 
+
 export default function ProductListing() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [products, setProducts] = useState([])
@@ -110,7 +111,69 @@ export default function ProductListing() {
   const visibleFeatures = showAllFeatures ? filterOptions.features : filterOptions.features.slice(0, VISIBLE_LIMIT)
 
   return (
-    <div className="container listing">
+    <div className="listing">
+      <div className="listing__mobile-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+          <path d="M21 21l-4.3-4.3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+        <input
+          type="search"
+          placeholder="Search"
+          defaultValue={search}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') updateParam('search', e.currentTarget.value)
+          }}
+        />
+      </div>
+
+      <div className="listing__mobile-pills">
+        <button
+          className={!categorySlug ? 'is-active' : ''}
+          onClick={() => updateParam('category', '')}
+        >
+          All
+        </button>
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            className={categorySlug === cat.slug ? 'is-active' : ''}
+            onClick={() => updateParam('category', cat.slug)}
+          >
+            {cat.name}
+          </button>
+        ))}
+      </div>
+
+      <div className="listing__mobile-toolbar">
+        <select value={sort} onChange={(e) => updateParam('sort', e.target.value)}>
+          <option value="newest">Sort: Newest</option>
+          <option value="price_asc">Price: Low to High</option>
+          <option value="price_desc">Price: High to Low</option>
+          <option value="rating">Top rated</option>
+        </select>
+        <span className="listing__mobile-filter-count">
+          Filter {hasActiveFilters ? `(${[categorySlug, ...selectedBrands, ...selectedFeatures, condition !== 'any' ? 1 : null, minRating || null, featuredOnly ? 1 : null].filter(Boolean).length})` : ''}
+        </span>
+        <div className="listing__view-toggle">
+          <button
+            aria-label="Grid view"
+            className={view === 'grid' ? 'is-active' : ''}
+            onClick={() => setView('grid')}
+          >
+            ▦
+          </button>
+          <button
+            aria-label="List view"
+            className={view === 'list' ? 'is-active' : ''}
+            onClick={() => setView('list')}
+          >
+            ☰
+          </button>
+        </div>
+      </div>
+
+    <div className="container">
       <div className="listing__breadcrumb">
         <Link to="/">Home</Link> / <span>{breadcrumbLabel}</span>
         {search && <span> · Results for "{search}"</span>}
@@ -357,6 +420,7 @@ export default function ProductListing() {
           )}
         </div>
       </div>
+    </div>
     </div>
   )
 }

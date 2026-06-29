@@ -4,9 +4,10 @@
 
 .home__hero-row {
   display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 24px;
+  grid-template-columns: 220px 1fr 240px;
+  gap: 20px;
   margin-top: 24px;
+  align-items: stretch;
 }
 
 .home__category-rail {
@@ -44,56 +45,118 @@
 }
 
 .home__hero {
-  background: linear-gradient(135deg, #a7e8d2 0%, #bfe3f0 100%);
+  background-color: #a7e8d2;
+  background-size: cover;
+  background-position: center;
   border-radius: var(--radius-lg);
-  padding: 48px;
+  /* padding: 40px; */
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 14px;
+  gap: 16px;
+  position: relative;
+  overflow: hidden;
 }
 
-.home__hero-eyebrow {
-  display: inline-block;
-  width: fit-content;
-  background: rgba(255, 255, 255, 0.6);
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #047857;
+.home__hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  /* background: linear-gradient(100deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.12) 55%, transparent 75%); */
+  z-index: 0;
+}
+
+.home__hero h1,
+.home__hero-cta {
+  position: relative;
+  z-index: 1;
 }
 
 .home__hero h1 {
-  font-size: 34px;
-  line-height: 1.2;
+  font-size: 30px;
+  line-height: 1.25;
   margin: 0;
-  color: #064e3b;
-}
-
-.home__hero p {
-  margin: 0;
-  color: #065f46;
-  font-size: 15px;
+  color: #111827;
+  max-width: 360px;
 }
 
 .home__hero-cta {
   width: fit-content;
-  background: var(--color-text);
-  color: white;
+  background: white;
+  color: var(--color-text);
   padding: 11px 22px;
   border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: 14px;
-  margin-top: 6px;
 }
 
 .home__hero-cta:hover {
-  background: #000;
+  background: var(--color-bg-subtle);
+}
+
+.home__welcome-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.home__welcome-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--color-border-strong);
+}
+
+.home__welcome-text {
+  margin: 4px 0 6px;
+  font-size: 13.5px;
+  color: var(--color-text);
+  line-height: 1.5;
+}
+
+.home__welcome-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.home__welcome-btn--primary {
+  background: var(--color-primary);
+  color: white;
+}
+
+.home__welcome-btn--primary:hover {
+  background: var(--color-primary-dark);
+}
+
+.home__welcome-btn--secondary {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border-strong);
+  color: var(--color-primary);
+}
+
+.home__welcome-promo {
+  border-radius: var(--radius-md);
+  padding: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  line-height: 1.4;
+}
+
+.home__welcome-promo--orange {
+  background: #f97316;
+}
+
+.home__welcome-promo--teal {
+  background: #14b8a6;
 }
 
 .home__section {
-  margin-top: 20px;
+  margin-top: 40px;
 }
 
 .home__section-head {
@@ -137,7 +200,6 @@
   to { background-position: -200% 0; }
 }
 
-/* ---------- Deals and offers (matches mockup: info card + countdown + 5 items) ---------- */
 .home__deals {
   display: grid;
   grid-template-columns: 220px repeat(5, 1fr);
@@ -223,6 +285,7 @@
   font-weight: 500;
   color: var(--color-text);
   display: -webkit-box;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -236,7 +299,6 @@
   border-radius: 12px;
 }
 
-/* ---------- Category showcase rows (image tile + sub-category grid) ---------- */
 .home__showcase {
   display: grid;
   grid-template-columns: 220px 1fr;
@@ -321,19 +383,36 @@
   flex-shrink: 0;
 }
 
-/* ---------- Quote / inquiry banner (adapted from "send requests to suppliers") ---------- */
 .home__quote-banner {
   margin-top: 40px;
 }
 
 .home__quote-banner-inner {
-  background: linear-gradient(120deg, #2563eb 0%, #38bdf8 100%);
+  background-color: #2563eb;
+  background-size: cover;
+  background-position: center;
   border-radius: var(--radius-lg);
   padding: 40px;
   display: grid;
   grid-template-columns: 1fr 360px;
   gap: 32px;
   align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.home__quote-banner-inner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(37,99,235,0.78) 0%, rgba(56,189,248,0.58) 100%);
+  z-index: 0;
+}
+
+.home__quote-banner-text,
+.home__quote-form {
+  position: relative;
+  z-index: 1;
 }
 
 .home__quote-banner-text h2 {
@@ -533,9 +612,6 @@
   .home__category-rail {
     display: none;
   }
-  .home__hero {
-    padding: 32px 24px;
-  }
   .home__hero h1 {
     font-size: 26px;
   }
@@ -550,11 +626,56 @@
   .home__deals {
     grid-template-columns: repeat(2, 1fr);
   }
-  .home__showcase-grid {
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(6, 1fr);
-  }
   .home__quote-banner-inner {
     padding: 28px 24px;
+  }
+}
+
+/* ============================================================ */
+/* Mobile simplification pass:                                   */
+/* - hide welcome/account card entirely                          */
+/* - hide countdown timer in Deals and offers                    */
+/* - limit Deals and offers to 3 items                           */
+/* - limit each category showcase row to 4 items (2 per line)    */
+/* - hide the "send inquiry" quote banner                        */
+/* - limit Recommended items to 4 (2 per line)                   */
+/* Desktop layout (above 640px) is completely unaffected.        */
+/* ============================================================ */
+@media (max-width: 640px) {
+  .home__welcome-card {
+    display: none;
+  }
+
+  .home__hero-row {
+    grid-template-columns: 1fr;
+  }
+
+  .home__deals-info .home__countdown {
+    display: none;
+  }
+
+  .home__deal-item:nth-child(n+4) {
+    display: none;
+  }
+
+  .home__showcase-item:nth-child(n+5) {
+    display: none;
+  }
+
+  .home__showcase-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+
+  .home__quote-banner {
+    display: none;
+  }
+
+  .home__grid--wide > :nth-child(n+5) {
+    display: none;
+  }
+
+  .home__grid--wide {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

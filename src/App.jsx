@@ -13,6 +13,7 @@ import Orders from './pages/Orders'
 import Admin from './pages/Admin'
 import Help from './pages/Help'
 import NotFound from './pages/NotFound'
+import Checkout from './pages/Checkout'
 
 export default function App() {
   return (
@@ -24,6 +25,14 @@ export default function App() {
           <Route path="/products" element={<ProductListing />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
+          <Route
+            path="/checkout"
+            element={
+              <RequireAuth>
+                <Checkout />
+              </RequireAuth>
+            }
+          />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route

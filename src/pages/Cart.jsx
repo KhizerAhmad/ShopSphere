@@ -38,14 +38,39 @@ export default function Cart() {
       navigate('/login')
       return
     }
-    if (items.length === 0) return
+
+    if (!items?.length) return
+
     setPlacing(true)
-    const { error } = await placeOrder(user.id, items, total)
+
+    const safeItems = items.map(i => ({
+      id: i.id,
+      quantity: Number(i.quantity),
+      product: {
+        id: i.product.id,
+        name: i.product.name,
+        price: Number(i.product.price)
+      }
+    }))
+
+    const safeTotal = Number(total)
+
+    console.log("ORDER DEBUG:", {
+      userId: user.id,
+      safeItems,
+      safeTotal
+    })
+
+    const { error } = await placeOrder(user.id, safeItems, safeTotal)
+
     setPlacing(false)
+
     if (error) {
+      console.log("SUPABASE ERROR:", error)
       showToast('Checkout failed — please try again', 'error')
       return
     }
+
     showToast('Order placed successfully!', 'success')
     await refreshCart()
     navigate('/orders')
@@ -63,7 +88,7 @@ export default function Cart() {
 
   return (
     <div className="container cart">
-      <h1>My cart ({items.length})</h1>
+      <h1 className="cart__desktop-title">My cart ({items.length})</h1>
 
       {items.length === 0 ? (
         <div className="cart__empty">
@@ -128,8 +153,18 @@ export default function Cart() {
               </div>
             </div>
 
-            <button className="cart__checkout-btn" onClick={handleCheckout} disabled={placing}>
-              {placing ? 'Placing order...' : `Checkout (${items.length} item${items.length === 1 ? '' : 's'})`}
+            <button
+              className="cart__checkout-btn"
+              onClick={() => navigate('/checkout', {
+                state: {
+                  items,
+                  subtotal,
+                  total
+                }
+              })}
+              disabled={placing || items.length === 0}
+            >
+              Checkout ({items.length} item{items.length === 1 ? '' : 's'})
             </button>
           </div>
         </div>
@@ -181,19 +216,27 @@ function CartRow({ row, onQuantity, onRemove, onSave }) {
         />
       </Link>
       <div className="cart-row__body">
-        <Link to={`/products/${product.id}`} className="cart-row__name">{product.name}</Link>
+        <div className="cart-row__top-line">
+          <Link to={`/products/${product.id}`} className="cart-row__name">{product.name}</Link>
+          <div className="cart-row__price">${(Number(product.price) * quantity).toFixed(2)}</div>
+        </div>
         <p className="cart-row__meta">In stock: {product.stock}</p>
         <div className="cart-row__links">
           <button className="cart-row__remove" onClick={onRemove}>Remove</button>
           <button className="cart-row__save" onClick={onSave}>Save for later</button>
         </div>
+        <div className="cart-row__qty cart-row__qty--mobile">
+          <button onClick={() => onQuantity(quantity - 1)} aria-label="Decrease quantity">−</button>
+          <span>{quantity}</span>
+          <button onClick={() => onQuantity(quantity + 1)} aria-label="Increase quantity">+</button>
+        </div>
       </div>
-      <div className="cart-row__qty">
+      <div className="cart-row__qty cart-row__qty--desktop">
         <button onClick={() => onQuantity(quantity - 1)} aria-label="Decrease quantity">−</button>
         <span>{quantity}</span>
         <button onClick={() => onQuantity(quantity + 1)} aria-label="Increase quantity">+</button>
       </div>
-      <div className="cart-row__price">${(Number(product.price) * quantity).toFixed(2)}</div>
+      <div className="cart-row__price cart-row__price--desktop">${(Number(product.price) * quantity).toFixed(2)}</div>
     </div>
   )
 }

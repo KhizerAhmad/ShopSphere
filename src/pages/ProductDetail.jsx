@@ -15,6 +15,7 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1)
   const [activeTab, setActiveTab] = useState('description')
   const [loading, setLoading] = useState(true)
+  const [showFullDescription, setShowFullDescription] = useState(false)
 
   const { addToCart } = useCart()
   const { user } = useAuth()
@@ -64,6 +65,123 @@ export default function ProductDetail() {
         <Link to="/">Home</Link> / <Link to="/products">{product.category?.name || 'Products'}</Link> / <span>{product.name}</span>
       </div>
 
+      {/* ---------- Mobile-only layout (Image 7) ---------- */}
+      {/* <div className="detail__mobile-header">
+        <button className="detail__mobile-back" onClick={() => window.history.back()} aria-label="Go back">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M15 19l-7-7 7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <div className="detail__mobile-header-icons">
+          <Link to="/cart" aria-label="Cart">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M3 3h2l.4 2M7 13h10l3-8H6.4M7 13L5.4 5M7 13l-1.7 5h12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="9" cy="20" r="1.2" fill="currentColor" />
+              <circle cx="17" cy="20" r="1.2" fill="currentColor" />
+            </svg>
+          </Link>
+        </div>
+      </div> */}
+
+      <div className="detail__mobile-image">
+        <img
+          src={product.image_url}
+          alt={product.name}
+          onError={(e) => {
+            e.currentTarget.onerror = null
+            e.currentTarget.src = FALLBACK_IMAGE
+          }}
+        />
+        <button className="detail__mobile-image-arrow detail__mobile-image-arrow--left" aria-label="Previous image" disabled>
+          ‹
+        </button>
+        <button className="detail__mobile-image-arrow detail__mobile-image-arrow--right" aria-label="Next image" disabled>
+          ›
+        </button>
+      </div>
+
+      <div className="detail__mobile-body">
+        <div className="detail__mobile-meta">
+          <span className="detail__mobile-rating">
+            {'★'.repeat(Math.round(product.rating || 0))}
+            <span className="detail__mobile-rating-faint">{'★'.repeat(5 - Math.round(product.rating || 0))}</span>
+          </span>
+          <span className="detail__mobile-dot">•</span>
+          <span>{Math.floor((product.rating || 4) * 7)} reviews</span>
+          <span className="detail__mobile-dot">•</span>
+          <span>{product.stock * 3 + 12} sold</span>
+        </div>
+
+        <h1 className="detail__mobile-name">{product.name}</h1>
+
+        <div className="detail__mobile-price-row">
+          <span className="detail__mobile-price">${Number(product.price).toFixed(2)}</span>
+        </div>
+
+        <div className="detail__mobile-actions">
+          <button className="detail__mobile-inquiry-btn" onClick={handleAddToCart} disabled={product.stock <= 0}>
+            {product.stock > 0 ? 'Add to cart' : 'Out of stock'}
+          </button>
+          <button className="detail__mobile-fav-btn" aria-label="Save for later">♡</button>
+        </div>
+
+        <dl className="detail__mobile-specs">
+          <div>
+            <dt>Condition</dt>
+            <dd>Brand new</dd>
+          </div>
+          {product.brand && (
+            <div>
+              <dt>Brand</dt>
+              <dd>{product.brand}</dd>
+            </div>
+          )}
+          <div>
+            <dt>Category</dt>
+            <dd>{product.category?.name || '—'}</dd>
+          </div>
+          <div>
+            <dt>Item num</dt>
+            <dd>{product.id.slice(0, 8).toUpperCase()}</dd>
+          </div>
+        </dl>
+
+        <div className="detail__mobile-description">
+          <p className={showFullDescription ? '' : 'detail__mobile-description-clamped'}>
+            {product.description || 'No description provided for this product yet.'}
+          </p>
+          {product.description && product.description.length > 80 && (
+            <button onClick={() => setShowFullDescription((v) => !v)}>
+              {showFullDescription ? 'Show less' : 'Read more'}
+            </button>
+          )}
+        </div>
+
+        <div className="detail__mobile-supplier">
+          <span className="detail__mobile-supplier-avatar">{(product.brand || 'B')[0]}</span>
+          <div className="detail__mobile-supplier-info">
+            <span className="detail__mobile-supplier-label">Sold by</span>
+            <span className="detail__mobile-supplier-name">{product.brand || 'Brand'} Official Store</span>
+          </div>
+          <span className="detail__mobile-supplier-chevron">›</span>
+        </div>
+
+        {related.length > 0 && (
+          <div className="detail__mobile-similar">
+            <h2>Similar products</h2>
+            <div className="detail__mobile-similar-scroll">
+              {related.map((p) => (
+                <Link to={`/products/${p.id}`} key={p.id} className="detail__mobile-similar-card">
+                  <img src={p.image_url} alt={p.name} />
+                  <span>${Number(p.price).toFixed(2)}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ---------- Desktop layout ---------- */}
       <div className="detail__top">
         <div className="detail__image">
           <img

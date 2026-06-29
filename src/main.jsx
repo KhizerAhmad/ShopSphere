@@ -6,6 +6,7 @@ import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { ToastProvider } from './context/ToastContext'
+import '@fortawesome/fontawesome-free/css/all.min.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

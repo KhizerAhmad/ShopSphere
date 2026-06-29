@@ -8,6 +8,7 @@ import { FALLBACK_IMAGE } from '../lib/fallbackImage'
 import ProductCard from '../components/ProductCard'
 import './Home.css'
 
+
 function useCountdown(hours = 13) {
   const [target] = useState(() => Date.now() + hours * 60 * 60 * 1000)
   const [remaining, setRemaining] = useState(target - Date.now())
@@ -34,7 +35,7 @@ export default function Home() {
   const countdown = useCountdown(13)
 
   const { addToCart } = useCart()
-  const { user } = useAuth()
+  const { user, profile } = useAuth()
   const { showToast } = useToast()
 
   useEffect(() => {
@@ -80,11 +81,34 @@ export default function Home() {
           </ul>
         </aside>
 
-        <div className="home__hero">
-          <span className="home__hero-eyebrow">New arrivals</span>
-          <h1>Latest trending<br /><strong>electronics &amp; essentials</strong></h1>
-          <p>Quality picks across tech, fashion, and home — all in one place.</p>
-          <Link to="/products" className="home__hero-cta">Shop now</Link>
+        <div
+          className="home__hero"
+          
+        >
+          <img src='src\assets\OIP (32).jpeg' style={{height:"340px"}}></img>
+        </div>
+
+        <div className="home__welcome-card">
+          {user ? (
+            <>
+              <div className="home__welcome-avatar" />
+              <p className="home__welcome-text">Hi, {profile?.full_name?.split(' ')[0] || 'there'}<br />welcome back</p>
+              <Link to="/products" className="home__welcome-btn home__welcome-btn--primary">Start shopping</Link>
+            </>
+          ) : (
+            <>
+              <div className="home__welcome-avatar" />
+              <p className="home__welcome-text">Hi, user<br />let&apos;s get started</p>
+              <Link to="/signup" className="home__welcome-btn home__welcome-btn--primary">Join now</Link>
+              <Link to="/login" className="home__welcome-btn home__welcome-btn--secondary">Log in</Link>
+            </>
+          )}
+          <div className="home__welcome-promo home__welcome-promo--orange">
+            Get US $10 off with a new account
+          </div>
+          <div className="home__welcome-promo home__welcome-promo--teal">
+            Send quotes with supplier preferences
+          </div>
         </div>
       </section>
 
@@ -165,9 +189,12 @@ export default function Home() {
       ))}
 
       <section className="home__quote-banner container">
-        <div className="home__quote-banner-inner">
+        <div
+          className="home__quote-banner-inner"
+          style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200)' }}
+        >
           <div className="home__quote-banner-text">
-            <h2>Need help finding the right product?</h2>
+            <h2>An easy way to send requests to all suppliers</h2>
             <p>Tell us what you're looking for and we'll help you find it.</p>
           </div>
           <form
@@ -230,7 +257,7 @@ export default function Home() {
         <div className="home__regions-grid">
           {SHIPPING_REGIONS.map((region) => (
             <div key={region.country} className="home__region">
-              <span className="home__region-flag">{region.flag}</span>
+              <img src={region.flag} className="home__region-flag" style={{height:'20px'}}/>
               <div>
                 <p className="home__region-country">{region.country}</p>
                 <p className="home__region-detail">{region.detail}</p>
@@ -251,10 +278,12 @@ const CATEGORY_SHOWCASES = [
     items: [
       { label: 'Coffee mugs', fromPrice: 18, image: 'https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=200' },
       { label: 'Plant pots', fromPrice: 22, image: 'https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=200' },
-      { label: 'Electric kettle', fromPrice: 34, image: 'https://images.unsplash.com/photo-1622220822304-6cdb01b86a73?w=200' },
-      { label: 'Throw pillows', fromPrice: 26, image: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e6?w=200' },
+      { label: 'Electric kettle', fromPrice: 34, image: 'https://th.bing.com/th/id/OIP.DduaJWN_CP_utU4atToyugHaHa?w=189&h=189&c=7&r=0&o=7&pid=1.7&rm=3' },
+      { label: 'Throw pillows', fromPrice: 26, image: 'https://th.bing.com/th/id/OIP.OuCu9WfwK80ETBljdt6HRwHaHa?w=198&h=198&c=7&r=0&o=7&pid=1.7&rm=3' },
       { label: 'Camping lantern', fromPrice: 21, image: 'https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?w=200' },
-      { label: 'Cooking pan set', fromPrice: 48, image: 'https://images.unsplash.com/photo-1584990347449-a8b1605c2bf6?w=200' },
+      { label: 'Cooking pan set', fromPrice: 48, image: 'https://th.bing.com/th/id/OIP.GoMmDQXKRRvOK6OyLhKlrwHaHT?w=194&h=192&c=7&r=0&o=7&pid=1.7&rm=3' },
+      { label: 'Carpets' , fromPrice: 35, image: 'https://th.bing.com/th/id/OIP.dGATg4kOgJ-Fz0mXDyhKQgHaHa?w=189&h=189&c=7&r=0&o=7&pid=1.7&rm=3'},
+      { label: 'Dining Table' , fromPrice: 350, image: 'https://th.bing.com/th/id/OIP.UQaheAII5zFtuasCFsgApgHaHa?w=187&h=187&c=7&r=0&o=7&pid=1.7&rm=3'},
     ],
   },
   {
@@ -268,6 +297,8 @@ const CATEGORY_SHOWCASES = [
       { label: 'Smartphones', fromPrice: 249, image: 'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=200' },
       { label: 'Laptops & PC', fromPrice: 549, image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=200' },
       { label: 'Speakers', fromPrice: 39, image: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=200' },
+      { label: 'Power Bank', fromPrice: 19, image: 'https://th.bing.com/th/id/OIP.0T_eAVZxBUvWJssTMILxKgHaGm?w=225&h=200&c=7&r=0&o=7&pid=1.7&rm=3' },
+      { label: 'Gaming Monitor', fromPrice: 230, image: 'https://th.bing.com/th/id/OIP.kIQ_p8RgGpQbowrljEpZhwHaEe?w=268&h=180&c=7&r=0&o=7&pid=1.7&rm=3' },
     ],
   },
 ]
@@ -296,12 +327,12 @@ const EXTRA_SERVICES = [
 ]
 
 const SHIPPING_REGIONS = [
-  { country: 'United States', detail: '3–5 business days', flag: '🇺🇸' },
-  { country: 'United Kingdom', detail: '4–6 business days', flag: '🇬🇧' },
-  { country: 'Pakistan', detail: '2–4 business days', flag: '🇵🇰' },
-  { country: 'Australia', detail: '5–7 business days', flag: '🇦🇺' },
-  { country: 'Canada', detail: '4–6 business days', flag: '🇨🇦' },
-  { country: 'United Arab Emirates', detail: '3–5 business days', flag: '🇦🇪' },
+  { country: 'United States', detail: '3–5 business days', flag: 'https://th.bing.com/th/id/OIP.o6qGMJjK3eeBHQYMGaV3pQHaEC?w=247&h=150&c=6&o=7&pid=1.7&rm=3' },
+  { country: 'United Kingdom', detail: '4–6 business days', flag: 'https://th.bing.com/th/id/OIP.Dx0oIIiKsZLJBufQy7qhiQHaFJ?w=234&h=180&c=7&r=0&o=7&pid=1.7&rm=3' },
+  { country: 'Pakistan', detail: '2–4 business days', flag: 'https://th.bing.com/th/id/OIP.MaXiU7NfWXBRIIfb7t9-BwHaE8?w=247&h=180&c=7&r=0&o=7&pid=1.7&rm=3' },
+  { country: 'Australia', detail: '5–7 business days', flag: 'https://th.bing.com/th/id/OIP.5WMErQElFMlxN2aIYAv8QwHaE-?w=247&h=180&c=7&r=0&o=7&pid=1.7&rm=3' },
+  { country: 'Canada', detail: '4–6 business days', flag: 'https://th.bing.com/th/id/OIP.mB6aMc1PvQNQZ1BHkcA3iAHaDt?w=328&h=175&c=7&r=0&o=7&pid=1.7&rm=3' },
+  { country: 'United Arab Emirates', detail: '3–5 business days', flag: 'https://th.bing.com/th/id/OIP.-pRvV9W2yBEhDUtuQEbjfgHaEK?w=333&h=187&c=7&r=0&o=7&pid=1.7&rm=3' },
 ]
 
 function CountdownBox({ label, value }) {
