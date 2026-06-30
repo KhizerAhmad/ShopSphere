@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext'
 import { useToast } from '../context/ToastContext'
 import { FALLBACK_IMAGE } from '../lib/fallbackImage'
 import ProductCard from '../components/ProductCard'
+import heroImage from '../assets/OIP (32).jpeg'
 import './Home.css'
 
 
@@ -85,7 +86,7 @@ export default function Home() {
           className="home__hero"
           
         >
-          <img src='src\assets\OIP (32).jpeg' style={{height:"340px"}}></img>
+          <img src={heroImage} style={{ height: "340px" }} alt="Hero" />
         </div>
 
         <div className="home__welcome-card">
