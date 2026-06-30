@@ -387,7 +387,7 @@
   display: none;
 }
 
-@media (max-width: 860px) {
+@media (max-width: 2500px) {
   [data-compact='true'] .site-header__row,
   [data-compact='true'] .site-header__search--mobile,
   [data-compact='true'] .site-header__pillnav {

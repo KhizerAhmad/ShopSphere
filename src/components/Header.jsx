@@ -9,11 +9,12 @@ import { ShoppingBag } from 'lucide-react'
 // Routes that get a slim back-arrow header on mobile instead of the full
 // logo/search/category-pill header (avoids the double-header stacking issue).
 function isCompactRoute(pathname) {
-  return pathname === '/cart' || pathname === '/products' || pathname.startsWith('/products/')
+  return pathname === '/cart' || pathname === '/products' || pathname.startsWith('/products/') || pathname.startsWith('/checkout')
 }
 
 function compactTitle(pathname, search) {
   if (pathname === '/cart') return 'Shopping cart'
+  if (pathname === '/checkout') return 'Checkout'
   if (pathname.startsWith('/products/')) return 'Product'
   if (pathname === '/products') {
     const params = new URLSearchParams(search)
