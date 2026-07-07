@@ -1,1 +1,7 @@
+# Ignore the main index file
 index.html linguist-documentation
+
+# Ignore any built, compiled, or minified HTML files everywhere in the project
+*.html linguist-documentation
+dist/**/*.html linguist-documentation
+build/**/*.html linguist-documentation
